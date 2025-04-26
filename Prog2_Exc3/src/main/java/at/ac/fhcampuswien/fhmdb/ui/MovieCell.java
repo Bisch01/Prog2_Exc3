@@ -1,11 +1,14 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.logic.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import com.jfoenix.controls.JFXButton;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -15,7 +18,45 @@ public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
     private final Label detail = new Label();
     private final Label genre = new Label();
-    private final VBox layout = new VBox(title, detail, genre);
+    private final JFXButton watchlistBtn = new JFXButton("To watchlist");
+    private final VBox layout;
+
+    private ClickEventHandler<Movie> onWatchlistClick;
+
+    // Neuer Konstruktor, der einen ClickEventHandler übergeben bekommt
+    public MovieCell(ClickEventHandler<Movie> handler, String buttonText) {
+        super();
+        this.onWatchlistClick = handler;
+
+        watchlistBtn.setStyle(
+                "-fx-background-color: #f5c518;" +
+                        "-fx-text-fill: black;" +
+                        "-fx-font-size: 8px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 6 30 6 30;" +
+                        "-fx-background-radius: 30;" +
+                        "-fx-cursor: hand;"
+        );
+
+        // Setze Text mit Icon (optional)
+        if (buttonText.toLowerCase().contains("entfernen")) {
+            watchlistBtn.setText("Delete");
+        } else {
+            watchlistBtn.setText("To Watchlist");
+        }
+
+        watchlistBtn.setOnAction(e -> {
+            if (getItem() != null && this.onWatchlistClick != null) {
+                this.onWatchlistClick.onClick(getItem());
+            }
+        });
+
+        // Layout für Titel und Button in eine Zeile
+        HBox topRow = new HBox(title, watchlistBtn);
+        topRow.setSpacing(10);
+
+        layout = new VBox(topRow, detail, genre);
+    }
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {

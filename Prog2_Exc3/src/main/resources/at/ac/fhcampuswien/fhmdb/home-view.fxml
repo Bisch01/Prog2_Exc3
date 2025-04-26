@@ -46,5 +46,16 @@
       </padding>
    </HBox>
 
+   <!-- Hier Buttons für Watchlist -->
+   <HBox spacing="10.0" alignment="CENTER_LEFT" style="-fx-background-color: #222;">
+      <children>
+         <JFXButton fx:id="showWatchlistBtn" text="Watchlist anzeigen" styleClass="background-yellow" />
+         <JFXButton fx:id="showAllMoviesBtn" text="Alle Filme anzeigen" styleClass="background-yellow" />
+      </children>
+      <padding>
+         <Insets bottom="10.0" left="10.0" top="10.0" />
+      </padding>
+   </HBox>
+
    <JFXListView fx:id="movieListView" styleClass="background-black" style="-fx-background-color: black;" stylesheets="@styles.css" VBox.vgrow="ALWAYS" />
 </VBox>

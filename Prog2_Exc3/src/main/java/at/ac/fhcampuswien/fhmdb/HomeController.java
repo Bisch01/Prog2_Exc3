@@ -1,8 +1,12 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.exceptionHandling.DatabaseException;
+import at.ac.fhcampuswien.fhmdb.logic.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import at.ac.fhcampuswien.fhmdb.data.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.data.DatabaseManager;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -42,8 +46,28 @@ public class HomeController implements Initializable {
     @FXML
     public TextField ratingFromInput;
 
+    @FXML
+    public JFXButton showWatchlistBtn;
+
+    @FXML
+    public JFXButton showAllMoviesBtn;
+
+    private WatchlistRepository watchlistRepository;
+
     public List<Movie> allMovies = new ArrayList<>();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
+
+    private ClickEventHandler<Movie> onAddToWatchlistClicked;
+
+
+    private void showAlert(String title, String message) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -56,8 +80,27 @@ public class HomeController implements Initializable {
             System.out.println("Fehler beim Laden der Filme: " + e.getMessage());
         }
 
+
+        watchlistRepository = new WatchlistRepository(DatabaseManager.getDatabaseManagerInstance().getWatchlistDao());
+
+            onAddToWatchlistClicked = (movie) -> {
+                try {
+                    boolean added = watchlistRepository.addToWatchlist(movie.getapiId());
+                    if (added) {
+                        showAlert("Erfolg", "Film wurde zur Watchlist hinzugefügt.");
+                    } else {
+                        showAlert("Info", "Der Film ist bereits auf deiner Watchlist.");
+                    }
+                } catch (DatabaseException e) {
+                    showAlert("Fehler", "Der Film konnte nicht zur Watchlist hinzugefügt werden: " + e.getMessage());
+                }
+            };
+
         movieListView.setItems(observableMovies);
-        movieListView.setCellFactory(movieListView -> new MovieCell());
+
+        //Für normale Ansicht
+        movieListView.setCellFactory(list -> new MovieCell(onAddToWatchlistClicked, "To Watchlist"));
+
 
 
 
@@ -87,7 +130,12 @@ public class HomeController implements Initializable {
                 sortMovies(false);
                 sortBtn.setText("Sort (asc)");
             }
+
         });
+
+        showWatchlistBtn.setOnAction(event -> showWatchlist());
+        showAllMoviesBtn.setOnAction(event -> showAllMovies());
+
     }
 
     //Methode zur Sortierung aufsteigend true oder absteigend false
@@ -122,4 +170,39 @@ public class HomeController implements Initializable {
             System.err.println("Fehler beim Filtern über API: " + e.getMessage());
         }
     }
+
+    ClickEventHandler<Movie> onRemoveFromWatchlistClicked = (movie) -> {
+        try {
+            watchlistRepository.removeFromWatchlist(movie.getapiId());
+            showAlert("Erfolg", "Film aus Watchlist entfernt.");
+            showWatchlist(); // Direkt aktualisieren!
+        } catch (DatabaseException e) {
+            showAlert("Fehler", "Film konnte nicht entfernt werden: " + e.getMessage());
+        }
+    };
+
+
+    public void showWatchlist() {
+        try {
+            List<String> watchlistIds = watchlistRepository.getAllWatchlistEntries()
+                    .stream().map(entry -> entry.getApiId()).collect(Collectors.toList());
+
+            List<Movie> watchlistMovies = allMovies.stream()
+                    .filter(movie -> watchlistIds.contains(movie.getapiId()))
+                    .collect(Collectors.toList());
+
+            observableMovies.setAll(watchlistMovies);
+
+            // Setze CellFactory mit Entfernen-Button
+            movieListView.setCellFactory(list -> new MovieCell(onRemoveFromWatchlistClicked, "Entfernen"));
+        } catch (DatabaseException e) {
+            showAlert("Fehler", "Watchlist konnte nicht geladen werden: " + e.getMessage());
+        }
+    }
+
+    public void showAllMovies() {
+        observableMovies.setAll(allMovies);
+        movieListView.setCellFactory(list -> new MovieCell(onAddToWatchlistClicked, "To Watchlist"));
+    }
+
 }

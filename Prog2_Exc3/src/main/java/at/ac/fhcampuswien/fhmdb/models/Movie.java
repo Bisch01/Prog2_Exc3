@@ -1,5 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,9 @@ public class Movie {
     private List <String> genres;
 
     //Mehr Attribute wegen API
-    private String id;
+    @SerializedName("id")
+    private String apiId;
+
     private List<String> mainCast;
     private List<String> directors;
     private int releaseYear;
@@ -21,11 +25,11 @@ public class Movie {
 
 
     //Konstruktor
-    public Movie(String title, String description, List<String> genres, String id, List<String> mainCast, List<String> directors, int releaseYear, double rating) {
+    public Movie(String title, String description, List<String> genres, String apiid, List<String> mainCast, List<String> directors, int releaseYear, double rating) {
         this.title = title;
         this.description = description;
         this.genres = genres;
-        this.id = id;
+        this.apiId = apiId;
         this.mainCast = mainCast;
         this.directors = directors;
         this.releaseYear = releaseYear;
@@ -45,7 +49,7 @@ public class Movie {
 
     public List<String> getGenres() {return genres;}
 
-    public String getId(){return id;}
+    public String getapiId(){return apiId;}
 
     public List<String> getMainCast(){return mainCast;}
 

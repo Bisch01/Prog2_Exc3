@@ -34,7 +34,7 @@
         }
 
         public void testdb1() throws SQLException {
-            MovieEntity movie = new MovieEntity("Shrek");
+            MovieEntity movie = new MovieEntity("1234", "Shrek", "Animation,Comedy,Family");
             movieDao.create(movie);
         }
 
