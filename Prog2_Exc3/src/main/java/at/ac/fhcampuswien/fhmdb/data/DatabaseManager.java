@@ -9,6 +9,8 @@
     import com.j256.ormlite.table.TableUtils;
     import javafx.scene.control.Tab;
 
+    import javax.xml.crypto.Data;
+    import java.io.IOException;
     import java.sql.SQLException;
 
     public class DatabaseManager {
@@ -21,7 +23,7 @@
 
         private static DatabaseManager instance; //Instanz für die Singleton
 
-        private DatabaseManager() { //Singleton/Constructor
+        private DatabaseManager() throws DatabaseException { //Singleton/Constructor
             try {
             createConnectionSource();
                 TableUtils.createTableIfNotExists(conn, MovieEntity.class);
@@ -29,16 +31,11 @@
                 movieDao = DaoManager.createDao(conn, MovieEntity.class);
                 watchlistDao = DaoManager.createDao(conn, WatchlistMovieEntity.class);
             } catch (SQLException e){
-                System.out.println(e.getMessage());
+                throw new DatabaseException("Datenbank konnte nicht initialisiert werden.", e);
             }
         }
 
-        public void testdb1() throws SQLException {
-            MovieEntity movie = new MovieEntity("1234", "Shrek", "Animation,Comedy,Family");
-            movieDao.create(movie);
-        }
-
-        public static DatabaseManager getDatabaseManagerInstance() { //Singleton-getter
+        public static DatabaseManager getDatabaseManagerInstance() throws DatabaseException { //Singleton-getter
             if (instance == null) {
                 instance = new DatabaseManager();
             }
@@ -54,9 +51,23 @@
             return conn;
         }
 
-        public void createTables() throws SQLException {
-            TableUtils.createTable(conn, MovieEntity.class);
-            TableUtils.createTable(conn, WatchlistMovieEntity.class);
+        public void createTables() throws DatabaseException {
+            try {
+
+                TableUtils.createTableIfNotExists(conn, MovieEntity.class);
+                TableUtils.createTableIfNotExists(conn, WatchlistMovieEntity.class);
+            }catch (SQLException e){
+                throw new DatabaseException("Tabelle konnten nicht erstellt werden.", e);
+            }
+        }
+        public void close() throws DatabaseException {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                throw new DatabaseException("Fehler beim schließen der Datenbank.", e);
+            }
         }
 
         public Dao<WatchlistMovieEntity, Long> getWatchlistDao() {

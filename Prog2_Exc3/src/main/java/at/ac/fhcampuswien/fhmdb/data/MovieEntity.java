@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.List;
 
-@DatabaseTable(tableName = "Movie")
+@DatabaseTable(tableName = "movies")
 public class MovieEntity {
     @DatabaseField(generatedId = true)
     private long id;
@@ -20,7 +20,20 @@ public class MovieEntity {
     @DatabaseField
     private String genres; // Kommagetrennter String, z.B. "Action,Drama,Comedy"
 
-    // ggf. weitere Felder nach Bedarf...
+    @DatabaseField
+    private String description;
+
+    @DatabaseField
+    private int releaseYear;
+
+    @DatabaseField
+    private String imgUrl;
+
+    @DatabaseField
+    private int lengthInMinutes;
+
+    @DatabaseField
+    private double rating;
 
     public MovieEntity() {}
 
@@ -38,4 +51,44 @@ public class MovieEntity {
     public void setApiId(String apiId) { this.apiId = apiId; }
     public void setTitle(String title) { this.title = title; }
     public void setGenres(String genres) { this.genres = genres; }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public int getLengthInMinutes() {
+        return lengthInMinutes;
+    }
+
+    public void setLengthInMinutes(int lengthInMinutes) {
+        this.lengthInMinutes = lengthInMinutes;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 }
