@@ -2,7 +2,6 @@ package at.ac.fhcampuswien.fhmdb.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Movie {
@@ -25,11 +24,11 @@ public class Movie {
 
 
     //Konstruktor
-    public Movie(String title, String description, List<String> genres, String apiid, List<String> mainCast, List<String> directors, int releaseYear, double rating) {
+    public Movie(String title, String description, List<String> genres, String apiId, List<String> mainCast, List<String> directors, int releaseYear, double rating) {
         this.title = title;
         this.description = description;
         this.genres = genres;
-        this.apiId = apiId;
+        this.apiId = this.apiId;
         this.mainCast = mainCast;
         this.directors = directors;
         this.releaseYear = releaseYear;
@@ -37,6 +36,39 @@ public class Movie {
 
     }
 
+    //Setter Methoden
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
+    }
+
+    public void setMainCast(List<String> mainCast) {
+        this.mainCast = mainCast;
+    }
+
+    public void setDirectors(List<String> directors) {
+        this.directors = directors;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 
     //Getter-Methoden
     public String getTitle() {
