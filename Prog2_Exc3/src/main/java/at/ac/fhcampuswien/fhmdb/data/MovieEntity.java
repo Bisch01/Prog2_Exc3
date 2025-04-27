@@ -37,10 +37,17 @@ public class MovieEntity {
 
     public MovieEntity() {}
 
-    public MovieEntity(String apiId, String title, String genres) {
+    public MovieEntity(String apiId, String title, String genres,
+                       String description, int releaseYear, String imgUrl,
+                       int lengthInMinutes, double rating) {
         this.apiId = apiId;
         this.title = title;
         this.genres = genres;
+        this.description = description;
+        this.releaseYear = releaseYear;
+        this.imgUrl = imgUrl;
+        this.lengthInMinutes = lengthInMinutes;
+        this.rating = rating;
     }
 
     public long getId() { return id; }

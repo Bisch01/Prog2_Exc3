@@ -23,16 +23,23 @@
 
         private static DatabaseManager instance; //Instanz für die Singleton
 
-        private DatabaseManager() throws DatabaseException { //Singleton/Constructor
+        private DatabaseManager() throws DatabaseException { // Singleton/Constructor
             try {
             createConnectionSource();
                 TableUtils.createTableIfNotExists(conn, MovieEntity.class);
                 TableUtils.createTableIfNotExists(conn, WatchlistMovieEntity.class);
+                createTables();
                 movieDao = DaoManager.createDao(conn, MovieEntity.class);
                 watchlistDao = DaoManager.createDao(conn, WatchlistMovieEntity.class);
             } catch (SQLException e){
                 throw new DatabaseException("Datenbank konnte nicht initialisiert werden.", e);
             }
+        }
+
+        public void testDB() throws SQLException {
+            MovieEntity movie = new MovieEntity("adsa","ada","a",
+                    "adwa",21,"daa",2,2);
+            movieDao.create(movie);
         }
 
         public static DatabaseManager getDatabaseManagerInstance() throws DatabaseException { //Singleton-getter

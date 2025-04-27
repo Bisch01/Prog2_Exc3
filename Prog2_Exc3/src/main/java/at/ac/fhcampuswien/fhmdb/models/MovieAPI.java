@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
+import at.ac.fhcampuswien.fhmdb.exceptionHandling.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -24,7 +25,7 @@ public class MovieAPI {
 
     // Methode run bekommt eine URL übergeben
     // Sendet HTTP-GET Anfrage an URL
-    public List<Movie> fetchMoviesWithParams(String query, String genre,String releaseYear, String ratingFrom) throws IOException{ // Hauptmethode um die URL aufzubauen
+    public List<Movie> fetchMoviesWithParams(String query, String genre,String releaseYear, String ratingFrom) throws MovieApiException { // Hauptmethode um die URL aufzubauen
         HttpUrl.Builder urlBuilder = HttpUrl.parse(URL).newBuilder();
         addQueryParam(urlBuilder, query);
         addGenreParam(urlBuilder,genre);
@@ -39,16 +40,18 @@ public class MovieAPI {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             if(!response.isSuccessful()){
-                throw new IOException("API-Aufruf Fehler: " + response);
+                throw new MovieApiException("API-Aufruf Fehler: " + response);
             }
             String json = response.body().string();
             Type movieListType = new TypeToken<List<Movie>>() {}.getType();
             return gson.fromJson(json, movieListType);
+        } catch (IOException e) {
+            throw new MovieApiException("Verbindungsfehler mit der API-Anfrage" + e);
         }
 
     }
 
-    public List<Movie> fetchMovies() throws IOException {
+    public List<Movie> fetchMovies() throws MovieApiException {
 
         Request request = new Request.Builder()
                 .url(URL)
@@ -58,11 +61,13 @@ public class MovieAPI {
         //Ausführung der HTTP-Anfrage und Antwrtverarbeitung
         try (Response response = client.newCall(request).execute()) {
             if(!response.isSuccessful()){
-                throw new IOException("Unexpected code " + response);
+                throw new MovieApiException("Unexpected code " + response);
             }
             String json = response.body().string();
             Type movieListType = new TypeToken<List<Movie>>() {}.getType();
             return gson.fromJson(json, movieListType);
+        } catch (IOException e) {
+            throw new MovieApiException("Verbindungsfehler zur API", e);
         }
     }
     // Hilfsmethode für die Hauptmethode damit man diese leichter testen kann

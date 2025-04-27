@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class MovieRepository {
-    private final Dao<MovieEntity, String> dao;
+    private final Dao<MovieEntity, Long> dao;
 
-    public MovieRepository(Dao<MovieEntity, String> dao) {
+    public MovieRepository(Dao<MovieEntity, Long> dao) {
         this.dao = dao;
     }
 
@@ -31,7 +31,7 @@ public class MovieRepository {
     }
     public void deleteMovie(String apiID) throws DatabaseException {
         try {
-            MovieEntity m = dao.queryForId(apiID);
+            MovieEntity m = dao.queryForId(Long.valueOf(apiID));
             if (m != null){
                 dao.delete(m);
             }
