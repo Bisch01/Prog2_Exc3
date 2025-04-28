@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.data;
 
 import at.ac.fhcampuswien.fhmdb.exceptionHandling.DatabaseException;
+import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
@@ -15,8 +16,15 @@ public class MovieRepository {
 
     public void addMovie(MovieEntity movie) throws DatabaseException {
         try{
+            List<MovieEntity> existingMovies = dao.queryForEq("apiId", movie.getApiId());
+            if (existingMovies.isEmpty()) {
+                dao.create(movie);
+            }else {
+                MovieEntity existingMovie = existingMovies.get(0);
+                movie.setApiId(existingMovie.getApiId());
+                dao.update(movie);
+            }
 
-            dao.createIfNotExists(movie);
         } catch (SQLException e){
             throw new DatabaseException("Film konnte nicht hinzugefügt werden", e);
         }

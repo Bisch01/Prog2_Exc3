@@ -36,11 +36,11 @@
             }
         }
 
-        public void testDB() throws SQLException {
+        /*public void testDB() throws SQLException {
             MovieEntity movie = new MovieEntity("adsa","ada","a",
                     "adwa",21,"daa",2,2);
             movieDao.create(movie);
-        }
+        }*/
 
         public static DatabaseManager getDatabaseManagerInstance() throws DatabaseException { //Singleton-getter
             if (instance == null) {

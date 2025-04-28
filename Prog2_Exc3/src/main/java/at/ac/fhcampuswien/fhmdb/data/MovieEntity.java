@@ -11,7 +11,7 @@ public class MovieEntity {
     @DatabaseField(generatedId = true)
     private long id;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, unique = true)
     private String apiId; // API- oder externe ID
 
     @DatabaseField

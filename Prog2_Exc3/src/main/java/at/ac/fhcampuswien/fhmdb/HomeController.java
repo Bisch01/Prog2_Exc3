@@ -229,19 +229,39 @@ public class HomeController implements Initializable {
         String releaseYear = Optional.ofNullable(releaseYearInput.getText()).orElse("").trim();
         String ratingFrom = Optional.ofNullable(ratingFromInput.getText()).orElse("").trim();
 
+        if(!releaseYear.isEmpty() && !releaseYear.matches("\\d+")) {
+            showAlert("Ungültige Eingabe","Bitte gib für das Jahr nur Zahlen ein.");
+            return;
+        }
+
+        if (!ratingFrom.isEmpty()){
+            try {
+                double rating = Double.parseDouble(ratingFrom);
+                if (rating < 0 || rating > 10){
+                    showAlert("Ungültige Eingabe","Die Bewertung muss zwischen 0 und 10 liegen.");
+                return;
+                }
+            }catch (NumberFormatException e){
+                showAlert("Ungültige Eingabe","Bitte gib für die Bewertung eine gültige Zahl ein.");
+                return;
+            }
+        }
+
         loadMoviesWithFilters(searchText, selectedGenre, releaseYear, ratingFrom);
     }
 
     private void loadMoviesWithFilters(String searchText, String selectedGenre, String releaseYear, String ratingFrom) {
         try {
-            MovieAPI api = new MovieAPI();
-            List<Movie> filteredMovies = api.fetchMoviesWithParams(searchText, selectedGenre, releaseYear, ratingFrom);
+            List<Movie> filteredMovies = movieAPI.fetchMoviesWithParams(searchText, selectedGenre, releaseYear, ratingFrom);
 
+            if(filteredMovies.isEmpty()){
+                showAlert("Keine Ergebnisse","Es wurden keine Filme gefunden, die deinen Filtern entsprechen.");
+            }
             allMovies = filteredMovies;
             observableMovies.setAll(allMovies);
         } catch (MovieApiException e) {
             // Fehlerausgabe bei fehlgeschlagenem API-Aufruf
-            System.err.println("Fehler beim Filtern über API: " + e.getMessage());
+            showAlert("API-Fehler","Fehler beim Filtern über API: " + e.getMessage() + "Es werden möglicherweise unfiltrierte Ergebnisse angezeigt.");
         }
     }
 

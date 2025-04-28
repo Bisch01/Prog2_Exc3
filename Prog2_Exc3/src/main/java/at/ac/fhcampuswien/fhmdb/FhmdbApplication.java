@@ -46,12 +46,12 @@ public class FhmdbApplication extends Application {
         }catch (MovieApiException | DatabaseException e){
             System.err.println("Fehler beim Cachen der Filme:" + e.getMessage());
         }
-        try {
+        /*try {
             DatabaseManager.getDatabaseManagerInstance().testDB();
 
         } catch (DatabaseException | SQLException e) {
             System.err.println("Fehler beim erstellen der Tabelle(glaub ich)" + e.getMessage());
-        }
+        }*/
     }
 
     public static void main(String[] args) {
