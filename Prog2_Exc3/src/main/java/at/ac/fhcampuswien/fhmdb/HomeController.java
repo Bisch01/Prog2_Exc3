@@ -229,9 +229,17 @@ public class HomeController implements Initializable {
         String releaseYear = Optional.ofNullable(releaseYearInput.getText()).orElse("").trim();
         String ratingFrom = Optional.ofNullable(ratingFromInput.getText()).orElse("").trim();
 
+        if (validateInputs(releaseYear, ratingFrom)){
+            return;
+        }
+
+        loadMoviesWithFilters(searchText, selectedGenre, releaseYear, ratingFrom);
+    }
+
+    private boolean validateInputs(String releaseYear, String ratingFrom) {
         if(!releaseYear.isEmpty() && !releaseYear.matches("\\d+")) {
             showAlert("Ungültige Eingabe","Bitte gib für das Jahr nur Zahlen ein.");
-            return;
+            return false;
         }
 
         if (!ratingFrom.isEmpty()){
@@ -239,15 +247,14 @@ public class HomeController implements Initializable {
                 double rating = Double.parseDouble(ratingFrom);
                 if (rating < 0 || rating > 10){
                     showAlert("Ungültige Eingabe","Die Bewertung muss zwischen 0 und 10 liegen.");
-                return;
+                    return false;
                 }
             }catch (NumberFormatException e){
                 showAlert("Ungültige Eingabe","Bitte gib für die Bewertung eine gültige Zahl ein.");
-                return;
+                return false;
             }
         }
-
-        loadMoviesWithFilters(searchText, selectedGenre, releaseYear, ratingFrom);
+        return true;
     }
 
     private void loadMoviesWithFilters(String searchText, String selectedGenre, String releaseYear, String ratingFrom) {
