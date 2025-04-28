@@ -261,7 +261,8 @@ public class HomeController implements Initializable {
             observableMovies.setAll(allMovies);
         } catch (MovieApiException e) {
             // Fehlerausgabe bei fehlgeschlagenem API-Aufruf
-            showAlert("API-Fehler","Fehler beim Filtern über API: " + e.getMessage() + "Es werden möglicherweise unfiltrierte Ergebnisse angezeigt.");
+
+            System.err.println("API-Fehler" + e.getMessage());
         }
     }
 

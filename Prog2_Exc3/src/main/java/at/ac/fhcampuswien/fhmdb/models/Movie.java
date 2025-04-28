@@ -28,7 +28,7 @@ public class Movie {
         this.title = title;
         this.description = description;
         this.genres = genres;
-        this.apiId = this.apiId;
+        this.apiId = apiId;
         this.mainCast = mainCast;
         this.directors = directors;
         this.releaseYear = releaseYear;
